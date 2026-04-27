@@ -586,6 +586,65 @@ button {
   @media (max-width: 800px) and (orientation: portrait) {
     --pool-token-width: 24px;
   }
+
+  /* === New UI theme tokens (ui-redesign-plan.md §6) ===
+     New tokens use --ah- prefix to coexist with legacy vars during migration. */
+
+  /* Surfaces — warm dark wood + parchment */
+  --ah-bg-stage:     #1a1310;
+  --ah-bg-panel:     #2a1f17;
+  --ah-bg-panel-2:   #1f1610;
+  --ah-bg-elevated:  #3a2a1d;
+
+  /* Ink */
+  --ah-ink:          #f0e6d2;
+  --ah-ink-dim:      #b8a888;
+  --ah-ink-muted:    #7a6a55;
+
+  /* Brand gold */
+  --ah-gold:         #c9a253;
+  --ah-gold-bright:  #e8c878;
+  --ah-gold-dim:     #6b4f24;
+
+  /* Status colors (game tokens) */
+  --ah-clue:         #6db5ff;
+  --ah-horror:       #a48bd8;
+  --ah-damage:       #d6443a;
+  --ah-resource:     #d8b14a;
+  --ah-threat:       #d96a2a;
+  --ah-bless:        #f4e3a1;
+  --ah-curse:        #6e3aa6;
+  --ah-success:      #7dbf6e;
+  --ah-danger:       #c0392b;
+
+  /* Borders */
+  --ah-border-soft:    rgba(201, 162, 83, 0.18);
+  --ah-border:         rgba(201, 162, 83, 0.45);
+  --ah-border-strong:  #c9a253;
+
+  /* Shadows / glows */
+  --ah-shadow-card:      0 4px 16px rgba(0, 0, 0, 0.55);
+  --ah-shadow-panel:     0 6px 24px rgba(0, 0, 0, 0.65);
+  --ah-glow-selected:    0 0 0 2px var(--ah-gold), 0 0 24px rgba(232, 200, 120, 0.35);
+  --ah-glow-actionable:  0 0 16px rgba(109, 181, 255, 0.45);
+
+  /* Radii */
+  --ah-r-sm: 4px;
+  --ah-r-md: 8px;
+  --ah-r-lg: 14px;
+
+  /* Spacing scale */
+  --ah-space-1: 4px;
+  --ah-space-2: 8px;
+  --ah-space-3: 12px;
+  --ah-space-4: 20px;
+  --ah-space-5: 32px;
+
+  /* Typography (project already loads Teutonic / Arno / Noto Sans;
+     keep generic display/body stacks so we can swap later without churn) */
+  --ah-font-display: "Teutonic", "Cinzel", "Trajan Pro", serif;
+  --ah-font-body:    "Noto Sans", Inter, system-ui, sans-serif;
+  --ah-font-log:     "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
 }
 
 h2.title {

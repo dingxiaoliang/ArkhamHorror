@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 
 import { computed, onMounted, onUnmounted, provide, ref, shallowRef, useTemplateRef, watch } from 'vue'
-import { onBeforeRouteLeave, useRouter } from 'vue-router'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import confetti   from '@/effects/confetti'
 import { useWebSocket } from '@vueuse/core'
@@ -49,6 +49,8 @@ import Settings from '@/arkham/components/Settings.vue'
 import StandaloneScenario from '@/arkham/components/StandaloneScenario.vue'
 import Draggable from '@/components/Draggable.vue'
 import Menu from '@/components/Menu.vue'
+import AppShell from '@/arkham/components/layout/AppShell.vue'
+import TopBar from '@/arkham/components/layout/TopBar.vue'
 
 interface GameCard {
   title: string
@@ -83,6 +85,10 @@ const props = withDefaults(defineProps<Props>(), { spectate: false })
 const debug = useDebug()
 const emitter = useEmitter()
 const router = useRouter()
+const route = useRoute()
+const newLayout = computed(() => route.query.newui === '1')
+const topActionsHost = ref<HTMLElement | null>(null)
+const stageHost = ref<HTMLElement | null>(null)
 const store = useCardStore()
 const userStore = useUserStore()
 const { addEntry, menuItems } = useMenu()
@@ -815,6 +821,22 @@ onUnmounted(() => {
       <!-- frontend/src/locales/en/gameBoard/base.json -->
        <p>{{ $t('outOfSyncHint') }}</p>
     </div>
+
+    <!-- New layout shell: opt-in via ?newui=1 (ui-redesign-plan.md §7) -->
+    <AppShell v-if="newLayout && game">
+      <template #top>
+        <TopBar :game="game">
+          <template #actions>
+            <div ref="topActionsHost" class="ah-actions-host" />
+          </template>
+        </TopBar>
+      </template>
+      <template #stage>
+        <div ref="stageHost" class="ah-stage-host" />
+      </template>
+    </AppShell>
+
+    <Teleport :to="topActionsHost" :disabled="!newLayout || !topActionsHost" defer>
     <div class="game-bar">
       <div class="game-bar-item">
         <div>
@@ -890,6 +912,9 @@ onUnmounted(() => {
         <button @click="toggleSidebar"><ArrowsRightLeftIcon aria-hidden="true" /> {{ $t('gameBar.toggleSidebar') }} </button>
       </div>
     </div>
+    </Teleport>
+
+    <Teleport :to="stageHost" :disabled="!newLayout || !stageHost" defer>
     <MultiplayerLobby
       v-if="game.gameState.tag === 'IsPending'"
       :game-id="gameId"
@@ -998,6 +1023,8 @@ onUnmounted(() => {
         </div>
       </div>
     </template>
+    </Teleport>
+
     <dialog id="undoScenarioDialog" ref="undoScenarioDialog">
       <p>Are you sure you wish to undo to the beginning of the scenario?</p>
       <div class="buttons">
@@ -1020,6 +1047,23 @@ onUnmounted(() => {
   &:has(.scroll-container) {
     overflow: auto;
   }
+}
+
+/* New layout teleport hosts (ui-redesign-plan.md §7) */
+.ah-actions-host {
+  display: flex;
+  align-items: center;
+  gap: var(--ah-space-2);
+  flex-wrap: wrap;
+}
+
+.ah-stage-host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
 }
 
 .game-main {
