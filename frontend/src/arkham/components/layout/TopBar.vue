@@ -59,10 +59,30 @@ const phaseLabel = computed(() => {
   align-items: center;
   gap: var(--ah-space-3);
   padding: var(--ah-space-2) var(--ah-space-4);
-  min-height: 48px;
+  min-height: 56px;
   font-family: var(--ah-font-display);
   color: var(--ah-ink);
+  position: relative;
 }
+
+/* Inset gold hairlines top + bottom for the parchment-banner feel */
+.ah-topbar::before,
+.ah-topbar::after {
+  content: "";
+  position: absolute;
+  left: var(--ah-space-3);
+  right: var(--ah-space-3);
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--ah-gold-dim) 20%,
+    var(--ah-gold) 50%,
+    var(--ah-gold-dim) 80%,
+    transparent 100%);
+  opacity: 0.45;
+}
+.ah-topbar::before { top: 2px; }
+.ah-topbar::after  { bottom: 2px; }
 
 .ah-topbar__left   { justify-self: start;  min-width: 0; }
 .ah-topbar__center { justify-self: center; min-width: 0; }
@@ -113,17 +133,19 @@ const phaseLabel = computed(() => {
 }
 
 .ah-topbar__phase-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--ah-gold-dim);
-  box-shadow: 0 0 6px currentColor;
+  box-shadow: 0 0 8px currentColor, inset 0 0 0 1px rgba(0, 0, 0, 0.4);
+  outline: 1px solid var(--ah-border);
+  outline-offset: 2px;
 
-  &[data-phase="MythosPhase"]        { background: var(--ah-curse); }
-  &[data-phase="InvestigationPhase"] { background: var(--ah-clue); }
-  &[data-phase="EnemyPhase"]         { background: var(--ah-damage); }
-  &[data-phase="UpkeepPhase"]        { background: var(--ah-success); }
-  &[data-phase="CampaignPhase"]      { background: var(--ah-resource); }
+  &[data-phase="MythosPhase"]        { background: var(--ah-curse); color: var(--ah-curse); }
+  &[data-phase="InvestigationPhase"] { background: var(--ah-clue); color: var(--ah-clue); }
+  &[data-phase="EnemyPhase"]         { background: var(--ah-damage); color: var(--ah-damage); }
+  &[data-phase="UpkeepPhase"]        { background: var(--ah-success); color: var(--ah-success); }
+  &[data-phase="CampaignPhase"]      { background: var(--ah-resource); color: var(--ah-resource); }
 }
 
 .ah-topbar__phase-label {

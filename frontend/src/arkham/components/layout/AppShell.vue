@@ -63,9 +63,11 @@
 
 .ah-shell__top {
   grid-area: top;
-  border-bottom: 1px solid var(--ah-border-soft);
+  border-bottom: 1px solid var(--ah-border);
   background: var(--ah-bg-panel-2);
+  box-shadow: var(--ah-shadow-panel);
   min-height: 0;
+  z-index: 2;
 }
 
 .ah-shell__stage {

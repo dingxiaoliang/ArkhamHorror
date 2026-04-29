@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 
-import { computed, onMounted, onUnmounted, provide, ref, shallowRef, useTemplateRef, watch } from 'vue'
+import { computed, onMounted, onUnmounted, provide, ref, shallowRef, useTemplateRef, watch, watchEffect } from 'vue'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import confetti   from '@/effects/confetti'
@@ -89,6 +89,12 @@ const route = useRoute()
 const newLayout = computed(() => route.query.newui === '1')
 const topActionsHost = ref<HTMLElement | null>(null)
 const stageHost = ref<HTMLElement | null>(null)
+
+/* Toggle a body class while in the new shell so global chrome (NavBar, footer)
+   can be hidden via CSS in App.vue. Cleared on unmount. */
+watchEffect(() => {
+  document.body.classList.toggle('ah-newui-game', newLayout.value)
+})
 const store = useCardStore()
 const userStore = useUserStore()
 const { addEntry, menuItems } = useMenu()
@@ -731,6 +737,7 @@ onBeforeRouteLeave(() => close())
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyPress)
   document.removeEventListener('mousemove', onMove)
+  document.body.classList.remove('ah-newui-game')
   delete (window as any).sendDebug
   delete (window as any).undo
   delete (window as any).debugChoose

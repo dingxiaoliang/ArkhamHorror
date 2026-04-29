@@ -60,6 +60,51 @@ html {
   color-scheme: dark;
   interpolate-size: allow-keywords;
 }
+
+/* New UI: hide global NavBar + footer while inside the new game shell. */
+body.ah-newui-game > header#nav,
+body.ah-newui-game > footer {
+  display: none;
+}
+
+/* New UI: re-skin the legacy .game-bar when teleported into TopBar's actions slot.
+   Strips its panel background and shrinks buttons to fit the topbar height. */
+body.ah-newui-game .ah-actions-host > .game-bar {
+  background: transparent;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 12px;
+  color: var(--ah-ink-dim);
+}
+body.ah-newui-game .ah-actions-host > .game-bar button {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--ah-r-sm);
+  padding: 4px 8px;
+  height: auto;
+  color: var(--ah-ink-dim);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+body.ah-newui-game .ah-actions-host > .game-bar button:hover {
+  background: rgba(201, 162, 83, 0.10);
+  border-color: var(--ah-border-soft);
+  color: var(--ah-gold-bright);
+}
+body.ah-newui-game .ah-actions-host > .game-bar button svg {
+  width: 14px;
+  height: 14px;
+}
+body.ah-newui-game .ah-actions-host > .game-bar .game-bar-item.active,
+body.ah-newui-game .ah-actions-host > .game-bar .game-bar-item:hover {
+  background: transparent;
+}
+/* The .right div pushes the toggle-sidebar to the far end inside game-bar; in the
+   new layout the topbar is grid-aligned so we just let it sit inline. */
+body.ah-newui-game .ah-actions-host > .game-bar > div.right {
+  margin-left: 0;
+}
 * {
   padding: 0;
   margin: 0;
