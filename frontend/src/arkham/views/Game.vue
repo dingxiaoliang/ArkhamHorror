@@ -53,6 +53,7 @@ import AppShell from '@/arkham/components/layout/AppShell.vue'
 import TopBar from '@/arkham/components/layout/TopBar.vue'
 import RightRail from '@/arkham/components/layout/RightRail.vue'
 import DetailPanel from '@/arkham/components/panels/DetailPanel.vue'
+import TurnControls from '@/arkham/components/dock/TurnControls.vue'
 import { useGameSelectionStore } from '@/stores/game_selection'
 
 interface GameCard {
@@ -93,6 +94,7 @@ const newLayout = computed(() => route.query.newui === '1')
 const topActionsHost = ref<HTMLElement | null>(null)
 const stageHost = ref<HTMLElement | null>(null)
 const railHost = ref<HTMLElement | null>(null)
+const dockHost = ref<HTMLElement | null>(null)
 const selectionStore = useGameSelectionStore()
 
 /* Toggle a body class while in the new shell so global chrome (NavBar, footer)
@@ -850,6 +852,9 @@ onUnmounted(() => {
       <template #rail>
         <div ref="railHost" class="ah-rail-host" />
       </template>
+      <template #dock>
+        <div ref="dockHost" class="ah-dock-host" />
+      </template>
     </AppShell>
 
     <Teleport :to="topActionsHost" :disabled="!newLayout || !topActionsHost" defer>
@@ -1052,6 +1057,10 @@ onUnmounted(() => {
       </RightRail>
     </Teleport>
 
+    <Teleport :to="dockHost" :disabled="!newLayout || !dockHost" defer>
+      <TurnControls v-if="game" :game="game" :playerId="playerId" @choose="choose" />
+    </Teleport>
+
     <dialog id="undoScenarioDialog" ref="undoScenarioDialog">
       <p>Are you sure you wish to undo to the beginning of the scenario?</p>
       <div class="buttons">
@@ -1100,6 +1109,15 @@ onUnmounted(() => {
   flex-direction: column;
   min-height: 0;
   min-width: 0;
+}
+
+.ah-dock-host {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--ah-space-2) var(--ah-space-4);
+  min-height: 0;
 }
 
 .game-main {
