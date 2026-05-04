@@ -76,6 +76,11 @@
   overflow: hidden;
   min-height: 0;
   min-width: 0;
+  /* Sit above the dock in the stacking order so floating UI inside the
+     stage (SkillTest modal, ChoiceModal, Revelation card view, etc.) is
+     not painted over by the dock when the dock is tall enough to overlap
+     them on small viewports. */
+  z-index: 5;
 }
 
 .ah-shell__rail {
@@ -86,6 +91,8 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 4;
 }
 
 .ah-shell__dock {
@@ -93,6 +100,8 @@
   border-top: 1px solid var(--ah-border-soft);
   background: var(--ah-bg-panel-2);
   min-height: 0;
+  position: relative;
+  z-index: 1;
 }
 
 /* Responsive: collapse rail under 1024px (plan §7 step 9) */
