@@ -69,26 +69,23 @@ body.ah-newui-game > #app > footer {
   display: none;
 }
 
-/* DEBUG (temporary) — show whether the connections SVG is in the DOM at
-   all, regardless of mode. If you see a red dashed rectangle in the
-   stage area, the SVG is rendering. */
-svg.connections-svg {
-  outline: 4px dashed red !important;
-  background: rgba(255, 0, 0, 0.05) !important;
+/* New UI: gold connection lines on the location graph. Lives in this global
+   stylesheet (rather than a non-scoped block inside Connections.vue) so the
+   selector reliably wins against the scoped legacy rules. */
+body.ah-newui-game svg.connections-svg .line {
+  stroke: var(--ah-gold);
+  stroke-width: 4px;
+  opacity: 0.7;
 }
-svg.connections-svg line.line,
-svg.connections-svg .connection {
-  stroke: cyan !important;
-  stroke-width: 6px !important;
-  opacity: 1 !important;
+body.ah-newui-game svg.connections-svg .line.active {
+  stroke: var(--ah-gold-bright) !important;
+  stroke-width: 5px;
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(232, 200, 120, 0.6));
 }
-svg.connections-svg .line.active,
-svg.connections-svg line.active {
-  stroke: yellow !important;
-  stroke-width: 7px !important;
-}
-svg.connections-svg .enemy-line {
-  stroke: lime !important;
+body.ah-newui-game svg.connections-svg .enemy-line {
+  stroke: var(--ah-damage);
+  opacity: 0.75;
 }
 
 /* New UI: re-skin the legacy .game-bar when teleported into TopBar's actions slot.
