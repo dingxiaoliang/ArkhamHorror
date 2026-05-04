@@ -61,9 +61,11 @@ html {
   interpolate-size: allow-keywords;
 }
 
-/* New UI: hide global NavBar + footer while inside the new game shell. */
-body.ah-newui-game > header#nav,
-body.ah-newui-game > footer {
+/* New UI: hide global NavBar + footer while inside the new game shell.
+   header#nav and the App-level footer live inside #app, so the > combinator
+   used previously never matched. */
+body.ah-newui-game header#nav,
+body.ah-newui-game > #app > footer {
   display: none;
 }
 

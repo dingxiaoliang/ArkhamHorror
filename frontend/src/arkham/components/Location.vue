@@ -123,14 +123,19 @@ onBeforeUnmount(() => {
 })
 
 async function clicked(e: MouseEvent) {
+  // Update the new-UI selection immediately on every click so DetailPanel is
+  // responsive and isn't gated by the 300ms double-click debounce or by a
+  // following choose() that might race with a server update.
+  if (clickCount === 0) {
+    selectionStore.select({ kind: 'location', id: id.value })
+  }
   clickCount++;
   if (clickTimeout) {
     clearTimeout(clickTimeout);
-  }  
+  }
   clickTimeout = setTimeout(async () => {
     // Ensure this does not conflict with the double-click zoom-in functionality (toggleZoom in Scenario.vue)
     if (clickCount === 1){
-      selectionStore.select({ kind: 'location', id: id.value })
       if(cardAction.value !== -1) {
         choose(cardAction.value)
       } else if (abilities.value.length > 0) {
