@@ -1358,8 +1358,13 @@ async function addChaosToken(face: any){
       </div>
 
       <div id="player-zone">
-        <Teleport :to="newuiDockHost" :disabled="!teleportPlayerTabs" defer>
-          <div class="ah-dock-playertabs" :class="{ 'ah-dock-playertabs--newui': teleportPlayerTabs }">
+        <!-- Two parallel render paths for PlayerTabs. The v-if Teleport is
+             only mounted when both newui mode is active AND the dock host
+             ref is populated, so Vue's Teleport patch never sees a null
+             target (which was producing a `Cannot read properties of null
+             (reading '__isMounted')` crash on game unmount). -->
+        <Teleport v-if="teleportPlayerTabs" :to="newuiDockHost" defer>
+          <div class="ah-dock-playertabs ah-dock-playertabs--newui">
             <PlayerTabs
               :game="game"
               :playerId="playerId"
@@ -1377,6 +1382,22 @@ async function addChaosToken(face: any){
             </PlayerTabs>
           </div>
         </Teleport>
+        <PlayerTabs
+          v-else
+          :game="game"
+          :playerId="playerId"
+          :players="players"
+          :playerOrder="playerOrder"
+          :activePlayerId="activePlayerId"
+          :tarotCards="props.scenario.tarotCards"
+          @choose="choose"
+        >
+          <div class="zoom-control">
+            <button class="zoom-btn" @pointerdown.stop="startHold(decreaseZoom)" @pointerup="stopHold" @pointerleave="stopHold">−</button>
+            <input v-model.number="locationsZoom" type="range" min="0.25" max="6" step="0.05" class="zoom-slider" />
+            <button class="zoom-btn" @pointerdown.stop="startHold(increaseZoom)" @pointerup="stopHold" @pointerleave="stopHold">+</button>
+          </div>
+        </PlayerTabs>
         <div id="totals">
           <PoolItem type="doom" :amount="game.totalDoom" tooltip="Total Doom" />
           <PoolItem type="clue" :amount="game.totalClues" tooltip="Total Spendable Clues" />

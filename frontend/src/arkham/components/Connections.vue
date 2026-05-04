@@ -218,23 +218,3 @@ onBeforeUnmount(()=> {
 }
 </style>
 
-<style>
-/* New-UI palette: gold connection lines instead of muted white. The data-v
-   scoped selectors above don't apply to a body-class-conditional rule, so
-   this global block targets the SVG lines directly. */
-body.ah-newui-game svg.connections-svg .line {
-  stroke: var(--ah-gold);
-  stroke-width: 4px;
-  opacity: 0.7;
-}
-body.ah-newui-game svg.connections-svg .line.active {
-  stroke: var(--ah-gold-bright) !important;
-  stroke-width: 5px;
-  opacity: 1;
-  filter: drop-shadow(0 0 6px rgba(232, 200, 120, 0.7));
-}
-body.ah-newui-game svg.connections-svg .enemy-line {
-  stroke: var(--ah-damage);
-  opacity: 0.75;
-}
-</style>

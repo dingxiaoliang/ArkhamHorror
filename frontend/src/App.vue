@@ -69,6 +69,28 @@ body.ah-newui-game > #app > footer {
   display: none;
 }
 
+/* DEBUG (temporary) — show whether the connections SVG is in the DOM at
+   all, regardless of mode. If you see a red dashed rectangle in the
+   stage area, the SVG is rendering. */
+svg.connections-svg {
+  outline: 4px dashed red !important;
+  background: rgba(255, 0, 0, 0.05) !important;
+}
+svg.connections-svg line.line,
+svg.connections-svg .connection {
+  stroke: cyan !important;
+  stroke-width: 6px !important;
+  opacity: 1 !important;
+}
+svg.connections-svg .line.active,
+svg.connections-svg line.active {
+  stroke: yellow !important;
+  stroke-width: 7px !important;
+}
+svg.connections-svg .enemy-line {
+  stroke: lime !important;
+}
+
 /* New UI: re-skin the legacy .game-bar when teleported into TopBar's actions slot.
    Strips its panel background and shrinks buttons to fit the topbar height. */
 body.ah-newui-game .ah-actions-host > .game-bar {
