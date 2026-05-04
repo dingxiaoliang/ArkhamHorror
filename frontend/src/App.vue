@@ -69,6 +69,15 @@ body.ah-newui-game > #app > footer {
   display: none;
 }
 
+/* New UI: re-skin legacy "interactable" highlights from purple to gold.
+   The legacy theme used --select (rebeccapurple-ish) for can-interact
+   borders on Location, Treachery, AbilityButton, Question, etc. Override
+   the variable inside the new UI body so every consumer flips to gold
+   without per-component edits. */
+body.ah-newui-game {
+  --select: var(--ah-gold);
+}
+
 /* New UI: gold connection lines on the location graph. Lives in this global
    stylesheet (rather than a non-scoped block inside Connections.vue) so the
    selector reliably wins against the scoped legacy rules. */

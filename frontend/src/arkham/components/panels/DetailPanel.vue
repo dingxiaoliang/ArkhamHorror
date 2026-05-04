@@ -4,6 +4,9 @@ import type { Game } from '@/arkham/types/Game'
 import { useGameSelectionStore } from '@/stores/game_selection'
 import { useCardStore } from '@/stores/cards'
 import ActionList from '@/arkham/components/panels/ActionList.vue'
+import TokenStrip, {
+  type TokenStripItem,
+} from '@/arkham/components/tokens/TokenStrip.vue'
 
 const props = defineProps<{ game: Game; playerId: string | null }>()
 const emit = defineEmits<{ choose: [index: number] }>()
@@ -52,6 +55,42 @@ const enemyFight = computed(() => fixed(enemy.value?.fight))
 const enemyEvade = computed(() => fixed(enemy.value?.evade))
 const enemyHealth = computed(() => fixed(enemy.value?.health))
 
+const tokens = computed<TokenStripItem[]>(() => {
+  if (location.value) {
+    const loc = location.value
+    return [
+      { kind: 'shroud', amount: loc.shroud ?? 0, show: loc.shroud !== null, label: 'Shroud' },
+      { kind: 'clue', amount: loc.tokens.Clue ?? 0, label: 'Clues' },
+      { kind: 'doom', amount: loc.tokens.Doom ?? 0, label: 'Doom' },
+    ]
+  }
+  if (enemy.value) {
+    const e = enemy.value
+    const items: TokenStripItem[] = []
+    if (enemyFight.value !== null) items.push({ kind: 'fight', amount: enemyFight.value, label: 'Fight' })
+    if (enemyHealth.value !== null) {
+      const remaining = enemyHealth.value - e.assignedDamage
+      items.push({ kind: 'health', amount: `${remaining}/${enemyHealth.value}`, label: 'Health' })
+    }
+    if (enemyEvade.value !== null) items.push({ kind: 'evade', amount: enemyEvade.value, label: 'Evade' })
+    if ((e.tokens.Doom ?? 0) > 0) items.push({ kind: 'doom', amount: e.tokens.Doom!, label: 'Doom' })
+    if ((e.tokens.Clue ?? 0) > 0) items.push({ kind: 'clue', amount: e.tokens.Clue!, label: 'Clues' })
+    return items
+  }
+  if (asset.value) {
+    const a = asset.value
+    const items: TokenStripItem[] = []
+    if (a.health !== null) items.push({ kind: 'health', amount: a.health, label: 'Health' })
+    if (a.sanity !== null) items.push({ kind: 'horror', amount: a.sanity, label: 'Sanity' })
+    if ((a.tokens.Resource ?? 0) > 0) items.push({ kind: 'resource', amount: a.tokens.Resource!, label: 'Resources' })
+    if ((a.tokens.Charge ?? 0) > 0) items.push({ kind: 'resource', amount: a.tokens.Charge!, label: 'Charges' })
+    if ((a.tokens.Damage ?? 0) > 0) items.push({ kind: 'damage', amount: a.tokens.Damage!, label: 'Damage' })
+    if ((a.tokens.Horror ?? 0) > 0) items.push({ kind: 'horror', amount: a.tokens.Horror!, label: 'Horror' })
+    return items
+  }
+  return []
+})
+
 function pick(index: number) {
   emit('choose', index)
 }
@@ -65,58 +104,11 @@ function pick(index: number) {
       <p v-if="traits.length" class="ah-detail__traits">{{ traits.join(' • ') }}</p>
     </header>
 
-    <ul class="ah-detail__stats">
-      <template v-if="location">
-        <li v-if="location.shroud !== null">
-          <span class="ah-detail__stat-label">Shroud</span>
-          <span class="ah-detail__stat-value">{{ location.shroud }}</span>
-        </li>
-        <li v-if="(location.tokens.Clue ?? 0) > 0">
-          <span class="ah-detail__stat-label">Clues</span>
-          <span class="ah-detail__stat-value">{{ location.tokens.Clue }}</span>
-        </li>
-        <li v-if="(location.tokens.Doom ?? 0) > 0">
-          <span class="ah-detail__stat-label">Doom</span>
-          <span class="ah-detail__stat-value">{{ location.tokens.Doom }}</span>
-        </li>
-      </template>
+    <TokenStrip :items="tokens" />
 
-      <template v-else-if="enemy">
-        <li v-if="enemyFight !== null">
-          <span class="ah-detail__stat-label">Fight</span>
-          <span class="ah-detail__stat-value">{{ enemyFight }}</span>
-        </li>
-        <li v-if="enemyHealth !== null">
-          <span class="ah-detail__stat-label">Health</span>
-          <span class="ah-detail__stat-value">{{ enemyHealth - enemy.assignedDamage }}/{{ enemyHealth }}</span>
-        </li>
-        <li v-if="enemyEvade !== null">
-          <span class="ah-detail__stat-label">Evade</span>
-          <span class="ah-detail__stat-value">{{ enemyEvade }}</span>
-        </li>
-        <li v-if="enemy.exhausted">
-          <span class="ah-detail__stat-label">Exhausted</span>
-        </li>
-      </template>
-
-      <template v-else-if="asset">
-        <li v-if="asset.health !== null">
-          <span class="ah-detail__stat-label">Health</span>
-          <span class="ah-detail__stat-value">{{ asset.health }}</span>
-        </li>
-        <li v-if="asset.sanity !== null">
-          <span class="ah-detail__stat-label">Sanity</span>
-          <span class="ah-detail__stat-value">{{ asset.sanity }}</span>
-        </li>
-        <li v-if="(asset.tokens.Resource ?? 0) > 0">
-          <span class="ah-detail__stat-label">Resources</span>
-          <span class="ah-detail__stat-value">{{ asset.tokens.Resource }}</span>
-        </li>
-        <li v-if="asset.exhausted">
-          <span class="ah-detail__stat-label">Exhausted</span>
-        </li>
-      </template>
-    </ul>
+    <p v-if="(enemy && enemy.exhausted) || (asset && asset.exhausted)" class="ah-detail__flag">
+      Exhausted
+    </p>
 
     <ActionList
       v-if="playerId"
@@ -180,35 +172,12 @@ function pick(index: number) {
   letter-spacing: 0.06em;
 }
 
-.ah-detail__stats {
-  list-style: none;
+.ah-detail__flag {
   margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ah-space-2) var(--ah-space-3);
-
-  li {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--ah-space-1);
-    padding: var(--ah-space-1) var(--ah-space-2);
-    border: 1px solid var(--ah-border-soft);
-    border-radius: var(--ah-r-sm);
-    background: rgba(0, 0, 0, 0.2);
-  }
-}
-
-.ah-detail__stat-label {
+  font-size: 0.75em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 0.7em;
   color: var(--ah-ink-muted);
-}
-
-.ah-detail__stat-value {
-  font-family: var(--ah-font-display);
-  color: var(--ah-gold-bright);
-  font-weight: 600;
+  font-style: italic;
 }
 </style>
