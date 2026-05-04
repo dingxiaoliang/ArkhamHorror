@@ -193,7 +193,14 @@ onBeforeUnmount(()=> {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index:-1;
+  /* z-index:-1 was used to drop the SVG behind location cards via the page
+     background. Now that .ah-shell__stage establishes a stacking context
+     (position: relative + z-index for modal layering), z-index:-1 traps
+     the SVG behind the stage's own content layer and the lines become
+     invisible. The SVG has pointer-events: none and is rendered before
+     location cards in the DOM, so leaving its z-index at the default still
+     puts cards on top. */
+  z-index: 0;
   overflow: visible !important;
 }
 
