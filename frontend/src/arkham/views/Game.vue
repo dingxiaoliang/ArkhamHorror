@@ -54,6 +54,7 @@ import TopBar from '@/arkham/components/layout/TopBar.vue'
 import RightRail from '@/arkham/components/layout/RightRail.vue'
 import DetailPanel from '@/arkham/components/panels/DetailPanel.vue'
 import TurnControls from '@/arkham/components/dock/TurnControls.vue'
+import InvestigatorDock from '@/arkham/components/dock/InvestigatorDock.vue'
 import { useGameSelectionStore } from '@/stores/game_selection'
 
 interface GameCard {
@@ -1031,7 +1032,7 @@ onUnmounted(() => {
           @choose="choose"
           @update="update"
         />
-        <div class="sidebar" v-if="showSidebar && game.scenario !== null && (game.gameState.tag === 'IsActive' || game.gameState.tag === 'IsOver')">
+        <div class="sidebar" v-if="!newLayout && showSidebar && game.scenario !== null && (game.gameState.tag === 'IsActive' || game.gameState.tag === 'IsOver')">
           <GameLog :game="game" :gameLog="gameLog" @undo="undo" />
         </div>
         <div class="game-over" v-if="gameOver">
@@ -1039,7 +1040,7 @@ onUnmounted(() => {
           <button class="replay-button" @click="router.push({name: 'ReplayGame', params: { gameId }})">{{ $t('watchReplay') }}</button>
           <CampaignLog v-if="game !== null" :game="game" :cards="cards" :playerId="playerId" />
         </div>
-        <div class="sidebar" v-if="showSidebar && game.scenario === null">
+        <div class="sidebar" v-if="!newLayout && showSidebar && game.scenario === null">
           <GameLog :game="game" :gameLog="gameLog" @undo="undo" />
         </div>
       </div>
@@ -1058,7 +1059,11 @@ onUnmounted(() => {
     </Teleport>
 
     <Teleport :to="dockHost" :disabled="!newLayout || !dockHost" defer>
-      <TurnControls v-if="game" :game="game" :playerId="playerId" @choose="choose" />
+      <template v-if="game">
+        <InvestigatorDock :game="game" :playerId="playerId" />
+        <div class="ah-dock-spacer" />
+        <TurnControls :game="game" :playerId="playerId" @choose="choose" />
+      </template>
     </Teleport>
 
     <dialog id="undoScenarioDialog" ref="undoScenarioDialog">
@@ -1115,9 +1120,13 @@ onUnmounted(() => {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: var(--ah-space-3);
   padding: var(--ah-space-2) var(--ah-space-4);
   min-height: 0;
+}
+
+.ah-dock-spacer {
+  flex: 1 1 auto;
 }
 
 .game-main {
