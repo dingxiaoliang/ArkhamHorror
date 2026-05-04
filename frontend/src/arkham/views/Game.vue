@@ -1052,8 +1052,11 @@ onUnmounted(() => {
     </template>
     </Teleport>
 
-    <Teleport :to="railHost" :disabled="!newLayout || !railHost" defer>
-      <RightRail v-if="game">
+    <!-- Rail / dock are new-UI only. v-if guards prevent the content from
+         rendering inline at the Teleport tag's position when ?newui=0
+         (a disabled Teleport still renders its slot in the source tree). -->
+    <Teleport v-if="newLayout && game" :to="railHost" :disabled="!railHost" defer>
+      <RightRail>
         <template #detail>
           <DetailPanel :game="game" :playerId="playerId" @choose="choose" />
         </template>
@@ -1063,11 +1066,9 @@ onUnmounted(() => {
       </RightRail>
     </Teleport>
 
-    <Teleport :to="dockHost" :disabled="!newLayout || !dockHost" defer>
-      <template v-if="game">
-        <InvestigatorDock class="ah-dock-slot ah-dock-slot--start" :game="game" :playerId="playerId" />
-        <TurnControls class="ah-dock-slot ah-dock-slot--end" :game="game" :playerId="playerId" @choose="choose" />
-      </template>
+    <Teleport v-if="newLayout && game" :to="dockHost" :disabled="!dockHost" defer>
+      <InvestigatorDock class="ah-dock-slot ah-dock-slot--start" :game="game" :playerId="playerId" />
+      <TurnControls class="ah-dock-slot ah-dock-slot--end" :game="game" :playerId="playerId" @choose="choose" />
     </Teleport>
 
     <dialog id="undoScenarioDialog" ref="undoScenarioDialog">
@@ -1127,6 +1128,10 @@ onUnmounted(() => {
   gap: var(--ah-space-3);
   padding: var(--ah-space-2) var(--ah-space-4);
   min-height: 0;
+  /* Cap dock height so PlayerTabs (which can be very tall internally) can't
+     crush the stage row of the grid. PlayerTabs deals with internal layout. */
+  max-height: 240px;
+  overflow: hidden;
 }
 
 /* Order is set explicitly so the dock layout doesn't depend on which
