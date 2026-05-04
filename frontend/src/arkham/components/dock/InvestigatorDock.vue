@@ -222,6 +222,11 @@ function onSanClick(e: MouseEvent) {
   background: rgba(0, 0, 0, 0.35);
   font-size: 0.85em;
   cursor: default;
+  /* Sit above the teleported PlayerTabs siblings in the dock so PlayerTabs's
+     positioned children (tabs, hand area) cannot intercept clicks on the
+     actionable stat counters. */
+  position: relative;
+  z-index: 2;
   transition: box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
 
   &--hp .ah-inv__stat-value { color: var(--ah-damage); }

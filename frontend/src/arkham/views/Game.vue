@@ -1131,10 +1131,11 @@ onUnmounted(() => {
   gap: var(--ah-space-3);
   padding: var(--ah-space-2) var(--ah-space-4);
   min-height: 0;
-  /* Cap dock height so PlayerTabs (which can be very tall internally) can't
-     crush the stage row of the grid. PlayerTabs deals with internal layout. */
-  max-height: 240px;
-  overflow: hidden;
+  /* No max-height / overflow: hidden here. PlayerTabs's hand peek uses a
+     negative margin-bottom (~-290px) to keep the bulk of the hand hidden
+     and only show a 50px sliver above its container's bottom. Clipping the
+     dock-host clips the entire peek, so we let PlayerTabs determine the
+     dock's natural height instead. */
 }
 
 /* Order is set explicitly so the dock layout doesn't depend on which
