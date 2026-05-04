@@ -1124,9 +1124,10 @@ onUnmounted(() => {
 .ah-dock-host {
   width: 100%;
   display: flex;
-  /* Bottom-align everything so InvestigatorDock, PlayerTabs's hand row, and
-     END TURN share a common baseline (matches reference mockup). */
-  align-items: flex-end;
+  /* Stretch is needed for PlayerTabs: its internal layout (hand peek,
+     slot rows, tab bar) relies on height: 100% resolving against the
+     parent. Per-slot align-self below keeps the others bottom-aligned. */
+  align-items: stretch;
   gap: var(--ah-space-3);
   padding: var(--ah-space-2) var(--ah-space-4);
   min-height: 0;
@@ -1139,8 +1140,8 @@ onUnmounted(() => {
 /* Order is set explicitly so the dock layout doesn't depend on which
    component teleports in first. PlayerTabs (teleported from Scenario.vue)
    uses .ah-dock-playertabs--newui and has order: 2. */
-.ah-dock-slot--start { order: 1; flex: 0 0 auto; }
-.ah-dock-slot--end   { order: 3; flex: 0 0 auto; margin-left: auto; }
+.ah-dock-slot--start { order: 1; flex: 0 0 auto; align-self: flex-end; }
+.ah-dock-slot--end   { order: 3; flex: 0 0 auto; align-self: flex-end; margin-left: auto; }
 
 .game-main {
   width: 100vw;
