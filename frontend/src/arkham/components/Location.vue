@@ -43,6 +43,11 @@ const showAbilities = ref<boolean>(false)
 const abilitiesEl = ref<HTMLElement | null>(null)
 const highlighter = useHighlighter()
 const selectionStore = useGameSelectionStore()
+const isSelected = computed(
+  () =>
+    selectionStore.selectedKind === 'location' &&
+    selectionStore.selectedId === props.location.id
+)
 
 const dragover = (e: DragEvent) => {
   e.preventDefault()
@@ -397,7 +402,7 @@ const highlighted = computed(() => highlighter.highlighted.value === props.locat
         </div>
       </div>
       <div class="location-column">
-        <div class="card-frame" :class="{ explosion }" ref="frame" @click="clicked">
+        <div class="card-frame" :class="{ explosion, 'ah-newui-selected': isSelected }" ref="frame" @click="clicked">
           <Locus v-if="locus" class="locus" />
           <span v-if="blocked" class="status-icon">
             <font-awesome-icon :icon="['fab', 'expeditedssl']" />
@@ -1021,5 +1026,17 @@ const highlighted = computed(() => highlighter.highlighted.value === props.locat
     justify-content: center;
     pointer-events: none;
   }
+}
+</style>
+
+<style>
+/* New-UI selection halo: when a location is the active selection in the
+   gameSelection store, surround its frame with the gold glow defined in
+   App.vue. Global block so the body-class selector matches without needing
+   to pierce the scoped stylesheet. */
+body.ah-newui-game .card-frame.ah-newui-selected {
+  box-shadow: var(--ah-glow-selected);
+  border-radius: 6px;
+  transition: box-shadow 160ms ease;
 }
 </style>
