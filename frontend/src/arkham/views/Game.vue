@@ -51,6 +51,9 @@ import Draggable from '@/components/Draggable.vue'
 import Menu from '@/components/Menu.vue'
 import AppShell from '@/arkham/components/layout/AppShell.vue'
 import TopBar from '@/arkham/components/layout/TopBar.vue'
+import RightRail from '@/arkham/components/layout/RightRail.vue'
+import DetailPanel from '@/arkham/components/panels/DetailPanel.vue'
+import { useGameSelectionStore } from '@/stores/game_selection'
 
 interface GameCard {
   title: string
@@ -89,6 +92,8 @@ const route = useRoute()
 const newLayout = computed(() => route.query.newui === '1')
 const topActionsHost = ref<HTMLElement | null>(null)
 const stageHost = ref<HTMLElement | null>(null)
+const railHost = ref<HTMLElement | null>(null)
+const selectionStore = useGameSelectionStore()
 
 /* Toggle a body class while in the new shell so global chrome (NavBar, footer)
    can be hidden via CSS in App.vue. Cleared on unmount. */
@@ -171,6 +176,7 @@ watch(
       gameLog.value = Object.freeze(newGame.log)
       playerId.value = newPlayerId
       ready.value = true
+      selectionStore.reset()
     })
   }, { immediate: true }
 )
@@ -841,6 +847,9 @@ onUnmounted(() => {
       <template #stage>
         <div ref="stageHost" class="ah-stage-host" />
       </template>
+      <template #rail>
+        <div ref="railHost" class="ah-rail-host" />
+      </template>
     </AppShell>
 
     <Teleport :to="topActionsHost" :disabled="!newLayout || !topActionsHost" defer>
@@ -1032,6 +1041,17 @@ onUnmounted(() => {
     </template>
     </Teleport>
 
+    <Teleport :to="railHost" :disabled="!newLayout || !railHost" defer>
+      <RightRail v-if="game">
+        <template #detail>
+          <DetailPanel :game="game" :playerId="playerId" @choose="choose" />
+        </template>
+        <template #log>
+          <GameLog :game="game" :gameLog="gameLog" @undo="undo" />
+        </template>
+      </RightRail>
+    </Teleport>
+
     <dialog id="undoScenarioDialog" ref="undoScenarioDialog">
       <p>Are you sure you wish to undo to the beginning of the scenario?</p>
       <div class="buttons">
@@ -1065,6 +1085,15 @@ onUnmounted(() => {
 }
 
 .ah-stage-host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.ah-rail-host {
   width: 100%;
   height: 100%;
   display: flex;

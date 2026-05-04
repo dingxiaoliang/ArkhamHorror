@@ -25,6 +25,7 @@ import * as Arkham from '@/arkham/types/Asset';
 import {isUse} from '@/arkham/types/Token';
 import { Card } from '../types/Card';
 import { isManifestedSpiritAsset } from '@/arkham/spiritVisuals';
+import { useGameSelectionStore } from '@/stores/game_selection';
 
 const props = withDefaults(defineProps<{
   game: Game
@@ -196,8 +197,10 @@ const hasPool = computed(() => {
 const choose = (idx: number) => emits('choose', idx)
 
 const showAbilities = ref<boolean>(false)
+const selectionStore = useGameSelectionStore()
 
 async function clicked() {
+  selectionStore.select({ kind: 'asset', id: id.value })
   if(cardAction.value !== -1) {
     emits('choose', cardAction.value)
   } else if (abilities.value.length > 0) {

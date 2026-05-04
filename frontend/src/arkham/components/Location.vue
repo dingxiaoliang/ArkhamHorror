@@ -27,6 +27,7 @@ import * as Arkham from '@/arkham/types/Location';
 import { TokenType } from '@/arkham/types/Token';
 import { Card } from '../types/Card';
 import useHighlighter from '@/composeable/useHighlighter';
+import { useGameSelectionStore } from '@/stores/game_selection';
 
 export interface Props {
   game: Game
@@ -41,6 +42,7 @@ const debugging = ref(false)
 const showAbilities = ref<boolean>(false)
 const abilitiesEl = ref<HTMLElement | null>(null)
 const highlighter = useHighlighter()
+const selectionStore = useGameSelectionStore()
 
 const dragover = (e: DragEvent) => {
   e.preventDefault()
@@ -128,6 +130,7 @@ async function clicked(e: MouseEvent) {
   clickTimeout = setTimeout(async () => {
     // Ensure this does not conflict with the double-click zoom-in functionality (toggleZoom in Scenario.vue)
     if (clickCount === 1){
+      selectionStore.select({ kind: 'location', id: id.value })
       if(cardAction.value !== -1) {
         choose(cardAction.value)
       } else if (abilities.value.length > 0) {

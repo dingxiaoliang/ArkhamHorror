@@ -20,6 +20,7 @@ import Story from '@/arkham/components/Story.vue'
 import ScarletKey from '@/arkham/components/ScarletKey.vue';
 import * as Arkham from '@/arkham/types/Enemy'
 import { isManifestedSpiritEnemy } from '@/arkham/spiritVisuals';
+import { useGameSelectionStore } from '@/stores/game_selection';
 
 const props = withDefaults(defineProps<{
   game: Game
@@ -198,8 +199,10 @@ const addedKeywords = computed(() => {
 const choose = (index: number) => emits('choose', index)
 
 const showAbilities = ref<boolean>(false)
+const selectionStore = useGameSelectionStore()
 
 async function clicked() {
+  selectionStore.select({ kind: 'enemy', id: id.value })
   if(cardAction.value !== -1) {
     emits('choose', cardAction.value)
     showAbilities.value = false
