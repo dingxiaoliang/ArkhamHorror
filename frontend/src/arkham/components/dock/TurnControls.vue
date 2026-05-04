@@ -57,21 +57,21 @@ function endTurn() {
   flex-direction: column;
   align-items: stretch;
   gap: var(--ah-space-2);
-  padding: var(--ah-space-3) var(--ah-space-4);
-  min-width: 200px;
+  padding: var(--ah-space-2) var(--ah-space-3);
+  min-width: 220px;
 }
 
 .ah-turn__end {
   font-family: var(--ah-font-display);
-  font-size: 1.1em;
-  letter-spacing: 0.18em;
+  font-size: 1.3em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  padding: var(--ah-space-3) var(--ah-space-4);
+  padding: var(--ah-space-3) var(--ah-space-5);
   color: var(--ah-bg-stage);
   background: linear-gradient(180deg, var(--ah-gold-bright) 0%, var(--ah-gold) 60%, var(--ah-gold-dim) 100%);
-  border: 1px solid var(--ah-border-strong);
+  border: 2px solid var(--ah-border-strong);
   border-radius: var(--ah-r-md);
-  box-shadow: var(--ah-shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: var(--ah-shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.35);
   cursor: pointer;
   transition: filter 120ms ease, transform 80ms ease;
 

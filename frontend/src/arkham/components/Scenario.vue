@@ -12,7 +12,9 @@ import {
   ref,
   ComputedRef,
   reactive,
-  provide
+  provide,
+  inject,
+  type Ref
 } from 'vue';
 import { type Game } from '@/arkham/types/Game';
 import { type Enemy } from '@/arkham/types/Enemy';
@@ -80,6 +82,13 @@ const upgradeDeck = computed(() => Object.values(props.game.question).some((q) =
 
 // emit helpers
 const choose = async (idx: number) => emit('choose', idx)
+
+// New-UI dock host: when ?newui=1 is on, Game.vue provides a DOM ref we
+// teleport <PlayerTabs> into so the investigator/assets/hand strip lives in
+// the redesigned dock instead of the stage.
+const newuiDockHost = inject<Ref<HTMLElement | null>>('newuiDockHost', ref(null))
+const newuiActive = inject<Ref<boolean>>('newuiActive', ref(false))
+const teleportPlayerTabs = computed(() => newuiActive.value && newuiDockHost.value)
 
 //Refs
 const settingsStore = useSettings()
@@ -1349,21 +1358,25 @@ async function addChaosToken(face: any){
       </div>
 
       <div id="player-zone">
-        <PlayerTabs
-          :game="game"
-          :playerId="playerId"
-          :players="players"
-          :playerOrder="playerOrder"
-          :activePlayerId="activePlayerId"
-          :tarotCards="props.scenario.tarotCards"
-          @choose="choose"
-        >
-          <div class="zoom-control">
-            <button class="zoom-btn" @pointerdown.stop="startHold(decreaseZoom)" @pointerup="stopHold" @pointerleave="stopHold">−</button>
-            <input v-model.number="locationsZoom" type="range" min="0.25" max="6" step="0.05" class="zoom-slider" />
-            <button class="zoom-btn" @pointerdown.stop="startHold(increaseZoom)" @pointerup="stopHold" @pointerleave="stopHold">+</button>
+        <Teleport :to="newuiDockHost" :disabled="!teleportPlayerTabs" defer>
+          <div class="ah-dock-playertabs" :class="{ 'ah-dock-playertabs--newui': teleportPlayerTabs }">
+            <PlayerTabs
+              :game="game"
+              :playerId="playerId"
+              :players="players"
+              :playerOrder="playerOrder"
+              :activePlayerId="activePlayerId"
+              :tarotCards="props.scenario.tarotCards"
+              @choose="choose"
+            >
+              <div class="zoom-control">
+                <button class="zoom-btn" @pointerdown.stop="startHold(decreaseZoom)" @pointerup="stopHold" @pointerleave="stopHold">−</button>
+                <input v-model.number="locationsZoom" type="range" min="0.25" max="6" step="0.05" class="zoom-slider" />
+                <button class="zoom-btn" @pointerdown.stop="startHold(increaseZoom)" @pointerup="stopHold" @pointerleave="stopHold">+</button>
+              </div>
+            </PlayerTabs>
           </div>
-        </PlayerTabs>
+        </Teleport>
         <div id="totals">
           <PoolItem type="doom" :amount="game.totalDoom" tooltip="Total Doom" />
           <PoolItem type="clue" :amount="game.totalClues" tooltip="Total Spendable Clues" />
@@ -2315,5 +2328,17 @@ async function addChaosToken(face: any){
 .concealed-card-group {
   display: grid;
   place-content: center;
+}
+
+/* When ?newui=1 is on, <PlayerTabs> teleports into the dock host. The wrapper
+   sits in the middle dock slot and grows to fill the space between
+   InvestigatorDock (left) and TurnControls (right). */
+.ah-dock-playertabs--newui {
+  order: 2;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -98,6 +98,11 @@ const railHost = ref<HTMLElement | null>(null)
 const dockHost = ref<HTMLElement | null>(null)
 const selectionStore = useGameSelectionStore()
 
+// Provide the new-UI dock target so deeply-nested children (e.g. Scenario.vue
+// → PlayerTabs) can teleport themselves into the dock when ?newui=1 is on.
+provide('newuiDockHost', dockHost)
+provide('newuiActive', newLayout)
+
 /* Toggle a body class while in the new shell so global chrome (NavBar, footer)
    can be hidden via CSS in App.vue. Cleared on unmount. */
 watchEffect(() => {
@@ -1060,9 +1065,8 @@ onUnmounted(() => {
 
     <Teleport :to="dockHost" :disabled="!newLayout || !dockHost" defer>
       <template v-if="game">
-        <InvestigatorDock :game="game" :playerId="playerId" />
-        <div class="ah-dock-spacer" />
-        <TurnControls :game="game" :playerId="playerId" @choose="choose" />
+        <InvestigatorDock class="ah-dock-slot ah-dock-slot--start" :game="game" :playerId="playerId" />
+        <TurnControls class="ah-dock-slot ah-dock-slot--end" :game="game" :playerId="playerId" @choose="choose" />
       </template>
     </Teleport>
 
@@ -1119,15 +1123,17 @@ onUnmounted(() => {
 .ah-dock-host {
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: var(--ah-space-3);
   padding: var(--ah-space-2) var(--ah-space-4);
   min-height: 0;
 }
 
-.ah-dock-spacer {
-  flex: 1 1 auto;
-}
+/* Order is set explicitly so the dock layout doesn't depend on which
+   component teleports in first. PlayerTabs (teleported from Scenario.vue)
+   uses .ah-dock-playertabs--newui and has order: 2. */
+.ah-dock-slot--start { order: 1; flex: 0 0 auto; align-self: center; }
+.ah-dock-slot--end   { order: 3; flex: 0 0 auto; align-self: center; margin-left: auto; }
 
 .game-main {
   width: 100vw;

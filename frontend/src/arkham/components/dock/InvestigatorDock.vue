@@ -80,13 +80,17 @@ const actions = computed(() => investigator.value?.remainingActions ?? 0)
   align-items: center;
   gap: var(--ah-space-3);
   min-width: 0;
+  padding: var(--ah-space-2) var(--ah-space-3);
+  border: 1px solid var(--ah-border-soft);
+  border-radius: var(--ah-r-md);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .ah-inv__portrait {
   flex: 0 0 auto;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  width: 84px;
+  height: 96px;
+  border-radius: var(--ah-r-md);
   overflow: hidden;
   border: 2px solid var(--ah-gold);
   box-shadow: var(--ah-shadow-card);
@@ -112,7 +116,7 @@ const actions = computed(() => investigator.value?.remainingActions ?? 0)
   margin: 0;
   font-family: var(--ah-font-display);
   color: var(--ah-gold-bright);
-  font-size: 1em;
+  font-size: 1.15em;
   letter-spacing: 0.04em;
   white-space: nowrap;
   overflow: hidden;
@@ -122,14 +126,15 @@ const actions = computed(() => investigator.value?.remainingActions ?? 0)
 .ah-inv__class {
   margin: 0;
   color: var(--ah-ink-dim);
-  font-size: 0.7em;
+  font-size: 0.75em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
+  font-style: italic;
 }
 
 .ah-inv__stats {
   list-style: none;
-  margin: var(--ah-space-1) 0 0 0;
+  margin: var(--ah-space-2) 0 0 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
@@ -139,12 +144,12 @@ const actions = computed(() => investigator.value?.remainingActions ?? 0)
 .ah-inv__stat {
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
-  padding: 2px 6px;
+  gap: 6px;
+  padding: 3px 8px;
   border: 1px solid var(--ah-border-soft);
   border-radius: var(--ah-r-sm);
-  background: rgba(0, 0, 0, 0.25);
-  font-size: 0.78em;
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 0.85em;
 
   &--hp .ah-inv__stat-value { color: var(--ah-damage); }
   &--san .ah-inv__stat-value { color: var(--ah-horror); }
@@ -154,14 +159,15 @@ const actions = computed(() => investigator.value?.remainingActions ?? 0)
 }
 
 .ah-inv__stat-label {
-  font-size: 0.85em;
+  font-size: 0.8em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   color: var(--ah-ink-muted);
 }
 
 .ah-inv__stat-value {
   font-family: var(--ah-font-display);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.05em;
 }
 </style>
