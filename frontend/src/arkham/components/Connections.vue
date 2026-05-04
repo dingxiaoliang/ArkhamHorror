@@ -223,13 +223,18 @@ onBeforeUnmount(()=> {
    scoped selectors above don't apply to a body-class-conditional rule, so
    this global block targets the SVG lines directly. */
 body.ah-newui-game svg.connections-svg .line {
-  stroke: rgba(201, 162, 83, 0.35); /* --ah-gold-dim, slightly translucent */
+  stroke: var(--ah-gold);
+  stroke-width: 4px;
+  opacity: 0.7;
 }
 body.ah-newui-game svg.connections-svg .line.active {
-  stroke: var(--ah-gold) !important;
-  filter: drop-shadow(0 0 4px rgba(232, 200, 120, 0.45));
+  stroke: var(--ah-gold-bright) !important;
+  stroke-width: 5px;
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(232, 200, 120, 0.7));
 }
 body.ah-newui-game svg.connections-svg .enemy-line {
-  stroke: rgba(214, 68, 58, 0.55); /* --ah-damage */
+  stroke: var(--ah-damage);
+  opacity: 0.75;
 }
 </style>
