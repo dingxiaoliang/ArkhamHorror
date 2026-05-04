@@ -1067,7 +1067,7 @@ onUnmounted(() => {
     </Teleport>
 
     <Teleport v-if="newLayout && game" :to="dockHost" :disabled="!dockHost" defer>
-      <InvestigatorDock class="ah-dock-slot ah-dock-slot--start" :game="game" :playerId="playerId" />
+      <InvestigatorDock class="ah-dock-slot ah-dock-slot--start" :game="game" :playerId="playerId" @choose="choose" />
       <TurnControls class="ah-dock-slot ah-dock-slot--end" :game="game" :playerId="playerId" @choose="choose" />
     </Teleport>
 
