@@ -2332,13 +2332,15 @@ async function addChaosToken(face: any){
 
 /* When ?newui=1 is on, <PlayerTabs> teleports into the dock host. The wrapper
    sits in the middle dock slot and grows to fill the space between
-   InvestigatorDock (left) and TurnControls (right). */
+   InvestigatorDock (left) and TurnControls (right). The dock parent
+   bottom-aligns its items, so the hand-card row lines up with the bottoms
+   of InvestigatorDock and TurnControls. */
 .ah-dock-playertabs--newui {
   order: 2;
   flex: 1 1 auto;
   min-width: 0;
-  align-self: stretch;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
 }
 </style>

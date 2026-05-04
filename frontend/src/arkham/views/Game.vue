@@ -1124,7 +1124,9 @@ onUnmounted(() => {
 .ah-dock-host {
   width: 100%;
   display: flex;
-  align-items: stretch;
+  /* Bottom-align everything so InvestigatorDock, PlayerTabs's hand row, and
+     END TURN share a common baseline (matches reference mockup). */
+  align-items: flex-end;
   gap: var(--ah-space-3);
   padding: var(--ah-space-2) var(--ah-space-4);
   min-height: 0;
@@ -1137,8 +1139,8 @@ onUnmounted(() => {
 /* Order is set explicitly so the dock layout doesn't depend on which
    component teleports in first. PlayerTabs (teleported from Scenario.vue)
    uses .ah-dock-playertabs--newui and has order: 2. */
-.ah-dock-slot--start { order: 1; flex: 0 0 auto; align-self: center; }
-.ah-dock-slot--end   { order: 3; flex: 0 0 auto; align-self: center; margin-left: auto; }
+.ah-dock-slot--start { order: 1; flex: 0 0 auto; }
+.ah-dock-slot--end   { order: 3; flex: 0 0 auto; margin-left: auto; }
 
 .game-main {
   width: 100vw;
