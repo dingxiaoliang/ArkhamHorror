@@ -51,42 +51,24 @@ withDefaults(
   }
 }
 
-/* Gold L-shaped corners. Pure CSS so they scale perfectly and pick up the
-   --ah-gold color directly (no PNG to tint). The two short borders form an
-   L; a tiny gold triangle accent points inward for the "ornate" feel. */
+/* Gold corner ornaments. Use the bundled ornate-corner.png as a mask so we
+   can tint the original art via background-color (gold) without shipping a
+   pre-coloured asset. The PNG is the top-left orientation; the other three
+   corners mirror via transform. */
 .ah-frame__corner {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   pointer-events: none;
-  color: var(--ah-gold);
+  background-color: var(--ah-gold);
+  filter: drop-shadow(0 0 3px rgba(232, 200, 120, 0.45));
+  -webkit-mask: url('@/assets/frames/ornate-corner.png') top left / contain no-repeat;
+          mask: url('@/assets/frames/ornate-corner.png') top left / contain no-repeat;
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    background: currentColor;
-    box-shadow: 0 0 4px rgba(232, 200, 120, 0.45);
-  }
-
-  /* Horizontal short bar */
-  &::before {
-    inset: 0 auto auto 0;
-    width: 14px;
-    height: 2px;
-  }
-
-  /* Vertical short bar */
-  &::after {
-    inset: 0 auto auto 0;
-    width: 2px;
-    height: 14px;
-  }
-
-  &--tl { top: -2px;    left: -2px; }
-  &--tr { top: -2px;    right: -2px;  transform: scaleX(-1); }
-  &--bl { bottom: -2px; left: -2px;   transform: scaleY(-1); }
-  &--br { bottom: -2px; right: -2px;  transform: scale(-1, -1); }
+  &--tl { top: -3px;    left: -3px; }
+  &--tr { top: -3px;    right: -3px;  transform: scaleX(-1); }
+  &--bl { bottom: -3px; left: -3px;   transform: scaleY(-1); }
+  &--br { bottom: -3px; right: -3px;  transform: scale(-1, -1); }
 }
 
 .ah-frame__head {

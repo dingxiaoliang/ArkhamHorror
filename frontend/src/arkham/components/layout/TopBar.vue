@@ -2,6 +2,7 @@
   <div class="ah-topbar">
     <div class="ah-topbar__left">
       <slot name="brand">
+        <img class="ah-topbar__logo" :src="logoSrc" alt="Arkham Horror" />
         <div class="ah-topbar__title">
           <span v-if="campaignName" class="ah-topbar__campaign">{{ campaignName }}</span>
           <span v-if="scenarioTitle" class="ah-topbar__scenario">{{ scenarioTitle }}</span>
@@ -29,8 +30,10 @@
 import { computed } from 'vue'
 import type { Game } from '@/arkham/types/Game'
 import type { Phase } from '@/arkham/types/Phase'
+import logoGold from '@/assets/logo-gold.png'
 
 const props = defineProps<{ game: Game | null }>()
+const logoSrc = logoGold
 
 const scenario = computed(() => props.game?.scenario ?? null)
 const campaign = computed(() => props.game?.campaign ?? null)
@@ -84,9 +87,17 @@ const phaseLabel = computed(() => {
 .ah-topbar::before { top: 2px; }
 .ah-topbar::after  { bottom: 2px; }
 
-.ah-topbar__left   { justify-self: start;  min-width: 0; }
+.ah-topbar__left   { justify-self: start;  min-width: 0; display: flex; align-items: center; gap: var(--ah-space-3); }
 .ah-topbar__center { justify-self: center; min-width: 0; }
 .ah-topbar__right  { justify-self: end;    min-width: 0; display: flex; align-items: center; gap: var(--ah-space-2); }
+
+.ah-topbar__logo {
+  flex: 0 0 auto;
+  height: 36px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(232, 200, 120, 0.35));
+}
 
 .ah-topbar__title {
   display: flex;
