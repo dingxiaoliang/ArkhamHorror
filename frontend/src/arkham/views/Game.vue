@@ -94,7 +94,6 @@ const route = useRoute()
 const newLayout = computed(() => route.query.newui === '1')
 const topActionsHost = ref<HTMLElement | null>(null)
 const stageHost = ref<HTMLElement | null>(null)
-const railHost = ref<HTMLElement | null>(null)
 const dockHost = ref<HTMLElement | null>(null)
 const selectionStore = useGameSelectionStore()
 
@@ -856,10 +855,32 @@ onUnmounted(() => {
         <div ref="stageHost" class="ah-stage-host" />
       </template>
       <template #rail>
-        <div ref="railHost" class="ah-rail-host" />
+        <RightRail v-if="game">
+          <template #detail>
+            <DetailPanel :game="game" :playerId="playerId" @choose="choose" />
+          </template>
+          <template #log>
+            <GameLog :game="game" :gameLog="gameLog" @undo="undo" />
+          </template>
+        </RightRail>
       </template>
       <template #dock>
-        <div ref="dockHost" class="ah-dock-host" />
+        <div ref="dockHost" class="ah-dock-host">
+          <InvestigatorDock
+            v-if="game"
+            class="ah-dock-slot ah-dock-slot--start"
+            :game="game"
+            :playerId="playerId"
+            @choose="choose"
+          />
+          <TurnControls
+            v-if="game"
+            class="ah-dock-slot ah-dock-slot--end"
+            :game="game"
+            :playerId="playerId"
+            @choose="choose"
+          />
+        </div>
       </template>
     </AppShell>
 
@@ -1052,24 +1073,15 @@ onUnmounted(() => {
     </template>
     </Teleport>
 
-    <!-- Rail / dock are new-UI only. v-if guards prevent the content from
-         rendering inline at the Teleport tag's position when ?newui=0
-         (a disabled Teleport still renders its slot in the source tree). -->
-    <Teleport v-if="newLayout && game" :to="railHost" :disabled="!railHost" defer>
-      <RightRail>
-        <template #detail>
-          <DetailPanel :game="game" :playerId="playerId" @choose="choose" />
-        </template>
-        <template #log>
-          <GameLog :game="game" :gameLog="gameLog" @undo="undo" />
-        </template>
-      </RightRail>
-    </Teleport>
+    <!-- RightRail / InvestigatorDock / TurnControls used to live in
+         <Teleport> blocks targeting host refs inside AppShell. That made
+         them race with AppShell's unmount during route transition (refs
+         cleared before Teleport detached → __isMounted crash on patch).
+         They now render directly inside AppShell's #rail / #dock slots
+         above. PlayerTabs still teleports into the dock host (see
+         provide('newuiDockHost')) because it lives deep inside Scenario,
+         and that teleport already has a v-if guard against null target. -->
 
-    <Teleport v-if="newLayout && game" :to="dockHost" :disabled="!dockHost" defer>
-      <InvestigatorDock class="ah-dock-slot ah-dock-slot--start" :game="game" :playerId="playerId" @choose="choose" />
-      <TurnControls class="ah-dock-slot ah-dock-slot--end" :game="game" :playerId="playerId" @choose="choose" />
-    </Teleport>
 
     <dialog id="undoScenarioDialog" ref="undoScenarioDialog">
       <p>Are you sure you wish to undo to the beginning of the scenario?</p>
@@ -1104,15 +1116,6 @@ onUnmounted(() => {
 }
 
 .ah-stage-host {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  min-width: 0;
-}
-
-.ah-rail-host {
   width: 100%;
   height: 100%;
   display: flex;
