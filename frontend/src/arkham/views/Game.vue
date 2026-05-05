@@ -884,7 +884,12 @@ onUnmounted(() => {
       </template>
     </AppShell>
 
-    <Teleport :to="topActionsHost" :disabled="!newLayout || !topActionsHost" defer>
+    <!-- topActions / stage Teleports: fall back to 'body' (always-valid
+         CSS selector) when the host ref is null so Vue's patch never
+         dereferences null during route-transition unmount. The fallback
+         only applies briefly; :disabled=true keeps content at the source
+         position in legacy mode anyway. -->
+    <Teleport :to="topActionsHost ?? 'body'" :disabled="!newLayout || !topActionsHost" defer>
     <div class="game-bar">
       <div class="game-bar-item">
         <div>
@@ -962,7 +967,7 @@ onUnmounted(() => {
     </div>
     </Teleport>
 
-    <Teleport :to="stageHost" :disabled="!newLayout || !stageHost" defer>
+    <Teleport :to="stageHost ?? 'body'" :disabled="!newLayout || !stageHost" defer>
     <MultiplayerLobby
       v-if="game.gameState.tag === 'IsPending'"
       :game-id="gameId"
