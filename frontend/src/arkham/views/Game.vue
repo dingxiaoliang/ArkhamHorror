@@ -843,7 +843,7 @@ onUnmounted(() => {
     </div>
 
     <!-- New layout shell: opt-in via ?newui=1 (ui-redesign-plan.md §7) -->
-    <AppShell v-if="newLayout && game">
+    <AppShell v-if="newLayout && game" :rail-open="showSidebar">
       <template #top>
         <TopBar :game="game">
           <template #actions>
