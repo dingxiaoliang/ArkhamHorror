@@ -923,8 +923,17 @@ async function addChaosToken(face: any){
         </div>
         <button v-if="!forcedShowOutOfPlay" class="close button" @click="showOutOfPlay = false">{{$t('close')}}</button>
       </Draggable>
-      <Draggable v-if="showChaosBag">
-        <template #handle><header><h2>{{$t('gameBar.chaosBag')}}</h2></header></template>
+      <!-- ChaosBag viewer: Drawer in new UI, Draggable in legacy. Uses
+           <component :is> so the ~120 lines of debug tri-buttons aren't
+           duplicated. The handle slot is only consumed by Draggable;
+           Drawer reads its title from the prop. -->
+      <component
+        :is="newuiActive ? Drawer : Draggable"
+        v-if="showChaosBag"
+        v-bind="newuiActive ? { modelValue: showChaosBag, title: $t('gameBar.chaosBag') } : {}"
+        @update:modelValue="(v) => (showChaosBag = v)"
+      >
+        <template v-if="!newuiActive" #handle><header><h2>{{$t('gameBar.chaosBag')}}</h2></header></template>
         <ChaosBag :game="game" :skillTest="null" :chaosBag="scenario.chaosBag" :playerId="playerId" @choose="choose" />
         <div v-if="debug.active" class="buttons buttons-row">
           <div class="tri-button blessed">
@@ -1023,8 +1032,8 @@ async function addChaosToken(face: any){
             <button class="button auto-fail-button" @click="addChaosToken('AutoFail')">+</button>
           </div>
         </div>
-        <button class="button close-button" @click="showChaosBag = false">{{$t('close')}}</button>
-      </Draggable>
+        <button v-if="!newuiActive" class="button close-button" @click="showChaosBag = false">{{$t('close')}}</button>
+      </component>
       <CardRow
         v-if="showCards.ref.length > 0"
         :game="game"
