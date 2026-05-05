@@ -78,6 +78,29 @@ body.ah-newui-game {
   --select: var(--ah-gold);
 }
 
+/* New UI: warm wood texture under the AppShell + candlelight vignette
+   on the stage. Implements plan §1's "暖棕木纹 + 烛光晕" atmosphere. */
+body.ah-newui-game .ah-shell {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+                    url('@/assets/textures/wood.png');
+  background-size: auto, 320px;
+  background-blend-mode: multiply;
+}
+
+body.ah-newui-game .ah-shell__stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 38%,
+      rgba(232, 200, 120, 0.10) 0%,
+      rgba(232, 200, 120, 0.04) 25%,
+      rgba(0, 0, 0, 0.0) 55%,
+      rgba(0, 0, 0, 0.45) 100%);
+  z-index: 6;
+}
+
 /* New UI: gold connection lines on the location graph. Lives in this global
    stylesheet (rather than a non-scoped block inside Connections.vue) so the
    selector reliably wins against the scoped legacy rules. */

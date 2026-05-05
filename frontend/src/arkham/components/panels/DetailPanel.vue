@@ -7,6 +7,7 @@ import ActionList from '@/arkham/components/panels/ActionList.vue'
 import TokenStrip, {
   type TokenStripItem,
 } from '@/arkham/components/tokens/TokenStrip.vue'
+import OrnateFrame from '@/arkham/components/frames/OrnateFrame.vue'
 
 const props = defineProps<{ game: Game; playerId: string | null }>()
 const emit = defineEmits<{ choose: [index: number] }>()
@@ -97,14 +98,14 @@ function pick(index: number) {
 </script>
 
 <template>
-  <div class="ah-detail" v-if="hasSelection">
-    <header class="ah-detail__head">
-      <h3 class="ah-detail__title">{{ title }}</h3>
-      <p v-if="subtitle" class="ah-detail__subtitle">{{ subtitle }}</p>
-      <p v-if="traits.length" class="ah-detail__traits">{{ traits.join(' • ') }}</p>
-    </header>
+  <OrnateFrame v-if="hasSelection" class="ah-detail" parchment compact>
+    <template #title>
+      <span class="ah-detail__title-text">{{ title }}</span>
+      <small v-if="subtitle" class="ah-detail__subtitle">{{ subtitle }}</small>
+    </template>
+    <p v-if="traits.length" class="ah-detail__traits">{{ traits.join(' • ') }}</p>
 
-    <TokenStrip :items="tokens" />
+    <TokenStrip :items="tokens" align="center" />
 
     <p v-if="(enemy && enemy.exhausted) || (asset && asset.exhausted)" class="ah-detail__flag">
       Exhausted
@@ -116,7 +117,7 @@ function pick(index: number) {
       :playerId="playerId"
       @choose="pick"
     />
-  </div>
+  </OrnateFrame>
 
   <div class="ah-detail ah-detail--empty" v-else>
     <p>Select a card to inspect.</p>
@@ -125,14 +126,12 @@ function pick(index: number) {
 
 <style lang="scss" scoped>
 .ah-detail {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ah-space-3);
   font-family: var(--ah-font-body);
   color: var(--ah-ink);
 }
 
 .ah-detail--empty {
+  display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
@@ -141,35 +140,28 @@ function pick(index: number) {
   font-size: 0.9em;
 }
 
-.ah-detail__head {
-  display: flex;
-  flex-direction: column;
-  gap: var(--ah-space-1);
-  border-bottom: 1px solid var(--ah-border-soft);
-  padding-bottom: var(--ah-space-2);
-}
-
-.ah-detail__title {
-  margin: 0;
-  font-family: var(--ah-font-display);
-  color: var(--ah-gold-bright);
-  font-size: 1.15em;
-  letter-spacing: 0.02em;
+.ah-detail__title-text {
+  display: block;
 }
 
 .ah-detail__subtitle {
-  margin: 0;
+  display: block;
+  margin-top: 2px;
+  font-family: var(--ah-font-body);
   font-style: italic;
   color: var(--ah-ink-dim);
-  font-size: 0.85em;
+  font-size: 0.78em;
+  letter-spacing: 0.04em;
+  text-transform: none;
 }
 
 .ah-detail__traits {
-  margin: 0;
+  margin: 0 0 var(--ah-space-2);
   color: var(--ah-ink-dim);
-  font-size: 0.8em;
+  font-size: 0.78em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  text-align: center;
 }
 
 .ah-detail__flag {
