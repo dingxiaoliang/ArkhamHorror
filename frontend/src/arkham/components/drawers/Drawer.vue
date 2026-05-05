@@ -46,33 +46,34 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport to="body">
-    <Transition name="ah-drawer">
-      <div
-        v-if="isOpen"
-        class="ah-drawer__scrim"
-        :class="`ah-drawer__scrim--${side}`"
-        @click.self="close"
-      >
-        <aside
-          class="ah-drawer"
-          :class="`ah-drawer--${side}`"
-          :style="{ width }"
-          role="dialog"
-          aria-modal="true"
-          @click.stop
-        >
-          <header class="ah-drawer__head">
-            <h3 v-if="title" class="ah-drawer__title">{{ title }}</h3>
-            <button v-if="closable" class="ah-drawer__close" @click="close" aria-label="Close">×</button>
-          </header>
-          <div class="ah-drawer__body">
-            <slot />
-          </div>
-        </aside>
+  <!-- No <Teleport> + nested <Transition>: that combination clashed with
+       App.vue's route-level <Transition name="fade"> during Game unmount,
+       producing a "Cannot read properties of null (reading '__isMounted')"
+       crash. The scrim uses position: fixed so it covers the viewport
+       regardless of where in the tree this component renders. -->
+  <div
+    v-if="isOpen"
+    class="ah-drawer__scrim"
+    :class="`ah-drawer__scrim--${side}`"
+    @click.self="close"
+  >
+    <aside
+      class="ah-drawer"
+      :class="`ah-drawer--${side}`"
+      :style="{ width }"
+      role="dialog"
+      aria-modal="true"
+      @click.stop
+    >
+      <header class="ah-drawer__head">
+        <h3 v-if="title" class="ah-drawer__title">{{ title }}</h3>
+        <button v-if="closable" class="ah-drawer__close" @click="close" aria-label="Close">×</button>
+      </header>
+      <div class="ah-drawer__body">
+        <slot />
       </div>
-    </Transition>
-  </Teleport>
+    </aside>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -143,14 +144,4 @@ onBeforeUnmount(() => {
   padding: var(--ah-space-3) var(--ah-space-4);
 }
 
-/* Slide-in transitions */
-.ah-drawer-enter-active, .ah-drawer-leave-active {
-  transition: opacity 200ms ease;
-  .ah-drawer { transition: transform 220ms ease; }
-}
-.ah-drawer-enter-from, .ah-drawer-leave-to {
-  opacity: 0;
-  .ah-drawer--right { transform: translateX(100%); }
-  .ah-drawer--left  { transform: translateX(-100%); }
-}
 </style>
