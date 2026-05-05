@@ -56,7 +56,10 @@ withDefaults(
     "top  top"
     "stage rail"
     "dock dock";
-  background: var(--ah-bg-stage);
+  /* Use longhand so consumers (e.g. App.vue body.ah-newui-game block) can
+     layer a background-image (wood texture) without the shorthand here
+     resetting image to none. */
+  background-color: var(--ah-bg-stage);
   color: var(--ah-ink);
   overflow: hidden;
 
