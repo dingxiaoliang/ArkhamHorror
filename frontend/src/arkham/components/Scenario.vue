@@ -36,6 +36,7 @@ import AbilityButton from '@/arkham/components/AbilityButton.vue'
 import Act from '@/arkham/components/Act.vue';
 import CardView from '@/arkham/components/Card.vue';
 import Draggable from '@/components/Draggable.vue';
+import Drawer from '@/arkham/components/drawers/Drawer.vue';
 import ChaosBag from '@/arkham/components/ChaosBag.vue';
 import Agenda from '@/arkham/components/Agenda.vue';
 import Investigator from '@/arkham/components/Investigator.vue';
@@ -881,7 +882,31 @@ async function addChaosToken(face: any){
   </div>
   <div v-else-if="!gameOver" id="scenario" class="scenario" :data-scenario="scenario.id">
     <div class="scenario-body" :class="{'split-view': splitView }">
-      <Draggable v-if="showOutOfPlay || forcedShowOutOfPlay">
+      <!-- Out of play viewer: right-side Drawer in new UI, legacy Draggable
+           otherwise. Forced-open prompts disable Drawer's close affordances
+           so the player can't dismiss the modal until the prompt resolves. -->
+      <Drawer
+        v-if="newuiActive && (showOutOfPlay || forcedShowOutOfPlay)"
+        :modelValue="true"
+        @update:modelValue="(v) => (showOutOfPlay = v)"
+        :title="$t('gameBar.outOfPlay')"
+        :closable="!forcedShowOutOfPlay"
+      >
+        <div class="card-row-cards">
+          <div v-for="card in outOfPlay" :key="cardId(card)" class="card-row-card">
+            <CardView :game="game" :card="card" :playerId="playerId" @choose="$emit('choose', $event)" />
+          </div>
+          <EnemyView
+            v-for="enemy in outOfPlayEnemies"
+            :key="enemy.id"
+            :enemy="enemy"
+            :game="game"
+            :playerId="playerId"
+            @choose="choose"
+          />
+        </div>
+      </Drawer>
+      <Draggable v-else-if="showOutOfPlay || forcedShowOutOfPlay">
         <template #handle><header><h2>{{ $t('gameBar.outOfPlay') }}</h2></header></template>
         <div class="card-row-cards">
           <div v-for="card in outOfPlay" :key="cardId(card)" class="card-row-card">

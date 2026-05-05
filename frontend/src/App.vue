@@ -78,15 +78,6 @@ body.ah-newui-game {
   --select: var(--ah-gold);
 }
 
-/* New UI: hide the rotated 90° "View out of Play" / "View removed from
-   Play" side tabs from Scenario.vue. Plan §2 calls them out as breaking
-   immersion and being unreadable. The state (showOutOfPlay) is still
-   reachable via the View menu in the top bar so functionality stays. */
-body.ah-newui-game .view-out-of-play-button,
-body.ah-newui-game .view-removed-from-play-button {
-  display: none !important;
-}
-
 /* New UI: gold connection lines on the location graph. Lives in this global
    stylesheet (rather than a non-scoped block inside Connections.vue) so the
    selector reliably wins against the scoped legacy rules. */

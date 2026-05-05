@@ -7,8 +7,12 @@ const props = withDefaults(
     title?: string
     side?: 'right' | 'left'
     width?: string
+    /** When false, hide the × button, ignore ESC, and ignore scrim clicks.
+     *  Used for forced-open prompts where the player must address the
+     *  drawer's content before continuing. */
+    closable?: boolean
   }>(),
-  { side: 'right', width: 'clamp(280px, 28vw, 420px)' }
+  { side: 'right', width: 'clamp(280px, 28vw, 420px)', closable: true }
 )
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
@@ -19,11 +23,12 @@ const isOpen = computed({
 })
 
 function close() {
+  if (!props.closable) return
   isOpen.value = false
 }
 
 function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape' && isOpen.value) close()
+  if (e.key === 'Escape' && isOpen.value && props.closable) close()
 }
 
 watch(
@@ -59,7 +64,7 @@ onBeforeUnmount(() => {
         >
           <header class="ah-drawer__head">
             <h3 v-if="title" class="ah-drawer__title">{{ title }}</h3>
-            <button class="ah-drawer__close" @click="close" aria-label="Close">×</button>
+            <button v-if="closable" class="ah-drawer__close" @click="close" aria-label="Close">×</button>
           </header>
           <div class="ah-drawer__body">
             <slot />
