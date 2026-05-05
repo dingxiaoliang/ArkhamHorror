@@ -79,12 +79,13 @@ body.ah-newui-game {
 }
 
 /* New UI: warm wood texture under the AppShell + candlelight vignette
-   on the stage. Implements plan §1's "暖棕木纹 + 烛光晕" atmosphere. */
+   on the stage. Implements plan §1's "暖棕木纹 + 烛光晕" atmosphere.
+   wood.png is already a very dark stained-wood texture, so we tile it
+   directly without an extra dark multiplier. */
 body.ah-newui-game .ah-shell {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
-                    url('@/assets/textures/wood.png');
-  background-size: auto, 320px;
-  background-blend-mode: multiply;
+  background-image: url('@/assets/textures/wood.png');
+  background-repeat: repeat;
+  background-size: 380px;
 }
 
 body.ah-newui-game .ah-shell__stage::after {
@@ -93,11 +94,11 @@ body.ah-newui-game .ah-shell__stage::after {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 50% 38%,
-      rgba(232, 200, 120, 0.10) 0%,
-      rgba(232, 200, 120, 0.04) 25%,
-      rgba(0, 0, 0, 0.0) 55%,
-      rgba(0, 0, 0, 0.45) 100%);
+    radial-gradient(ellipse 70% 60% at 50% 38%,
+      rgba(232, 200, 120, 0.18) 0%,
+      rgba(232, 200, 120, 0.08) 30%,
+      rgba(0, 0, 0, 0.0) 60%,
+      rgba(0, 0, 0, 0.65) 100%);
   z-index: 6;
 }
 
